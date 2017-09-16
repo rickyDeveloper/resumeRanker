@@ -34,23 +34,5 @@ public class CustomClassifier {
                 System.out.println(label.word() + "\t" + answer);
             });
         });
-
     }
 }
-
-/*
-noMidNGrams=true
-        useDisjuntive=true
-        maxNGramLeng=6
-        usePrev=true
-        useNext=true
-        useSequence=true
-        usePrevSequence=true
-        maxLeft=1
-        useTypeSeqs=true
-        useTypeSeqs2=true
-        useTypeySequence=true
-        wordShape=chris2useLC
-
-        serializeTo=custom-model.ser.qz
-*/

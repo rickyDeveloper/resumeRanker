@@ -1,0 +1,4 @@
+object oriented design
+OOPs
+functional programming
+design patterns

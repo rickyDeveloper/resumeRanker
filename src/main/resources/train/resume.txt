@@ -1,5 +1,5 @@
 Hibernate
 java
 test
-object
-oriented
+object oriented concepts
+OOPs
