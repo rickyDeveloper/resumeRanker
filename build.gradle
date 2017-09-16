@@ -19,6 +19,7 @@ sourceSets {
 
 
 dependencies {
+    comile 'org.slf4j:slf4j-simple:1.7.12'
     compile 'org.projectlombok:lombok:1.16.18'
     compile 'org.apache.tika:tika-core:1.16'
     compile 'org.apache.tika:tika-parsers:1.16'
