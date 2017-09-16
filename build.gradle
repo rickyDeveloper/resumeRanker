@@ -1,0 +1,31 @@
+apply plugin: 'java'
+apply plugin: 'idea'
+
+// Repositories for fetching binary code.
+repositories {
+    mavenCentral()
+}
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+sourceSets {
+    main {
+        java {
+            srcDir 'src/main/java/'
+        }
+    }
+}
+
+
+dependencies {
+    compile 'org.projectlombok:lombok:1.16.18'
+    compile 'org.apache.tika:tika-core:1.16'
+    compile 'org.apache.tika:tika-parsers:1.16'
+    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.8.0'
+    compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.8.0', classifier: 'models'
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+}
+
+
+
