@@ -2,3 +2,5 @@
 .gradle/
 build/
 out/
+/.nb-gradle/
+/libs
