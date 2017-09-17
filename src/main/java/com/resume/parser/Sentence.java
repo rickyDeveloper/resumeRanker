@@ -7,6 +7,8 @@ package com.resume.parser;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javafx.util.Pair;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -39,5 +41,5 @@ public class Sentence {
     private Map<String,List<Pair<String,String>>> semanticGraph;
     
     /** interesting words */
-    private List<String> interestingWords;
+    private Set<String> interestingWords;
 }

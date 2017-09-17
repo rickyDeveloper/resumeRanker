@@ -5,12 +5,13 @@
  */
 package com.resume.nlp;
 
+import java.util.List;
+import java.util.Properties;
+
 import edu.stanford.nlp.ling.CoreAnnotations;
 import edu.stanford.nlp.pipeline.Annotation;
 import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 import edu.stanford.nlp.util.CoreMap;
-import java.util.List;
-import java.util.Properties;
 
 /**
  * Nlp, Natural Language processor contains methods utilize StanfordCore NLP 

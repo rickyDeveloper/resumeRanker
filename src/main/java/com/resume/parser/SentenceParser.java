@@ -26,12 +26,6 @@ import com.resume.nlp.Nlp;
  * @author Lokesh
  */
 public class SentenceParser implements Function<String, Sentence> {
-    
-    /** relation between nouns */
-    private String NOUN_COMPOUND_MODIFIER = "nn";
-    
-    /** proper noun, singular */
-    private String PROPER_NOUN_SINGULAR = "NNP";
 
     /**
      * Annotates the given string with appropriate tags and produces {@link Sentence}
@@ -80,36 +74,8 @@ public class SentenceParser implements Function<String, Sentence> {
             });
        
         });
-        sentence.setInterestingWords(getInterestingWordsFromPos(sentence.getPosTaggedList()));
+        sentence.setInterestingWords(new InterestingWordExtractor().apply(sentence));
         return sentence;
-    }
-    
-//    private List<String> getInerestingWordsFromSemanticGraph(Map<String,List<Pair<String, String>>> semanticGraph) {
-//        List<String> interestingWords = Lists.newArrayList();
-//        semanticGraph.get(NOUN_COMPOUND_MODIFIER);
-//        return interestingWords;
-//    }
-    
-    private List<String> getInterestingWordsFromPos(List<Pair<String,String>> posTaggedList) {
-        List<String> interestingWords = Lists.newArrayList();
-        int ngramIndex = 0;
-        for(int i =0; i<posTaggedList.size(); i++) {
-            Pair<String, String> token = posTaggedList.get(i);
-            if(PROPER_NOUN_SINGULAR.equals(token.getValue())){
-                ngramIndex = i + 1;
-                String interestingWord = token.getKey();
-                while(ngramIndex < posTaggedList.size()) {
-                    Pair<String, String> nextToken = posTaggedList.get(ngramIndex);
-                    if(!PROPER_NOUN_SINGULAR.equals(nextToken.getValue())) {
-                        i = ngramIndex - 1;
-                        break;
-                    }
-                    interestingWord += " " + nextToken.getKey();
-                }
-                interestingWords.add(interestingWord);
-            }
-        }
-        return interestingWords;
     }
     
 }

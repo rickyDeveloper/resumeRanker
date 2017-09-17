@@ -20,6 +20,8 @@ sourceSets {
 
 dependencies {
     compile 'org.projectlombok:lombok:1.16.18'
+    compile 'org.slf4j:slf4j-api:1.7.5'
+    compile 'org.slf4j:slf4j-log4j12:1.7.5'
     compile 'org.apache.tika:tika-core:1.16'
     compile 'org.apache.tika:tika-parsers:1.16'
     compile group: 'edu.stanford.nlp', name: 'stanford-corenlp', version: '3.8.0'

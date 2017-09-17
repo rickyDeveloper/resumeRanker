@@ -21,10 +21,10 @@ public class ResumeReader {
     public static void main(String[] args) {
         Nlp.init();
         Sentence sentence = new SentenceParser()//.apply("A minimum of two years commercial software development experience in Java, and four years overall software development experience");
-                .apply("Lokesh is good at Object Oriented Programming concepts, he knows typescript and Java");
-        System.out.println(sentence.getPosTaggedList());
-        System.out.println(sentence.getNerTaggedList());
-        System.out.println(sentence.getSemanticGraph());
+                .apply("Lokesh is good at Object Oriented Programming concepts, he knows Typescript and Java.");
+//        System.out.println(sentence.getPosTaggedList());
+//        System.out.println(sentence.getNerTaggedList());
+//        System.out.println(sentence.getSemanticGraph());
         System.out.println(sentence.getInterestingWords());
     }
     
