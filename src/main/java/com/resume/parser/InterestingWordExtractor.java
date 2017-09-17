@@ -7,6 +7,7 @@
 package com.resume.parser;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
 
@@ -22,8 +23,8 @@ import javafx.util.Pair;
  */
 public class InterestingWordExtractor implements Function<Sentence, Set<String>>{
 
-	/** relation between nouns */
-    private String NOUN_COMPOUND_MODIFIER = "nn";
+	/** compound words */
+    private String COMPOUND_WORD = "compound";
     
     /** proper noun, singular */
     private String PROPER_NOUN_SINGULAR = "NNP";
@@ -37,17 +38,27 @@ public class InterestingWordExtractor implements Function<Sentence, Set<String>>
 		Set<String> interestingWords = Sets.newHashSet();
 		if(sentence != null) {
 			if(CollectionUtils.isNotEmpty(sentence.getPosTaggedList())) {
-				interestingWords = getInterestingWordsFromPos(sentence.getPosTaggedList());
+				interestingWords.addAll(getInterestingWordsFromPos(sentence.getPosTaggedList()));
+			}
+			if(sentence.getSemanticGraph() != null) {
+				interestingWords.addAll(getInerestingWordsFromSemanticGraph(sentence.getSemanticGraph()));
 			}
 		}
 		return interestingWords;
 	}
 	
-//  private List<String> getInerestingWordsFromSemanticGraph(Map<String,List<Pair<String, String>>> semanticGraph) {
-//  List<String> interestingWords = Lists.newArrayList();
-//  semanticGraph.get(NOUN_COMPOUND_MODIFIER);
-//  return interestingWords;
-//}
+	/**
+	 * 
+	 * @param semanticGraph
+	 * @return
+	 */
+	private Set<String> getInerestingWordsFromSemanticGraph(Map<String,List<Pair<String, String>>> semanticGraph) {
+		Set<String> interestingWords = Sets.newHashSet();
+		if(semanticGraph.containsKey(COMPOUND_WORD)) {
+			semanticGraph.get(COMPOUND_WORD).forEach(pair -> interestingWords.add(pair.getKey() + " " + pair.getValue()));
+		}
+		return interestingWords;
+	}
 
 	/**
 	 * Extracts interesting words out of POS tagged tokens
@@ -76,5 +87,5 @@ public class InterestingWordExtractor implements Function<Sentence, Set<String>>
 	  }
 	  return interestingWords;
 	}
-
+	
 }

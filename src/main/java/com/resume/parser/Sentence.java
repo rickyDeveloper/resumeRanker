@@ -28,6 +28,9 @@ public class Sentence {
     /** actual sentence */
     private String line;
     
+    /** NER annotated text */
+    private String nerAnnotatedText;
+    
     /** the list of lemmas */
     private List<String> lemmas;
     
@@ -36,10 +39,20 @@ public class Sentence {
     
     /** ner tagged list */
     private List<Pair<String, String>> nerTaggedList;
-       
+    
     /** sematic graph edges */
     private Map<String,List<Pair<String,String>>> semanticGraph;
     
     /** interesting words */
     private Set<String> interestingWords;
+    
+    /** set of person names */
+    private Set<String> personSet;
+
+    /** set of organizations*/
+    private Set<String> orgSet;
+
+    /** set of durations */
+    private Set<String> duractionSet;
+
 }
