@@ -1,0 +1,32 @@
+#
+# Features
+#
+useClassFeature=true
+useWord=true
+userNGrams=true
+
+#
+# Printing
+#
+# printClassifier=HighWeight
+#printClassifierParam=200
+
+#
+# Mapping
+#
+map= word=0,answer=1
+
+#
+# Optimization
+#
+intern=true
+sigma=3
+useQN=true
+QNsize=15
+tolerance=1e-4
+
+#
+# Training input
+#
+loadClassifier=src/main/resources/train/skillClassModel.ser.gz
+serializeTo=src/main/resources/train/skillClassModel.ser.gz

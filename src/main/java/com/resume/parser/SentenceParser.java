@@ -88,6 +88,7 @@ public class SentenceParser implements Function<String, Sentence> {
         sentence.setInterestingWords(new InterestingWordExtractor().apply(sentence));
         sentence.setNerAnnotatedText(Nlp.annotateNer(line));
         processNerResults(sentence);
+        sentence.setSkillSet(getSkillSetMap(sentence));
         return sentence;
     }
     
@@ -153,5 +154,24 @@ public class SentenceParser implements Function<String, Sentence> {
 	      }
 	  }
 	  return interestingWords;
+	}
+	
+	/**
+	 * gets the skill set with nlp classifier
+	 * @param sentence
+	 * @return skill set map
+	 */
+	private Map<String, Set<String>> getSkillSetMap(Sentence sentence) {
+		Map<String, Set<String>> skillSet = Maps.newHashMap();
+		sentence.getLemmas().forEach(lemma -> {
+			Nlp.getSkillClassification(lemma).entrySet().forEach(entry -> {
+				if(skillSet.containsKey(entry.getKey())){
+					skillSet.get(entry.getKey()).addAll(entry.getValue());
+				} else {
+					skillSet.put(entry.getKey(), entry.getValue());
+				}
+			});
+		});
+		return skillSet;
 	}
 }
