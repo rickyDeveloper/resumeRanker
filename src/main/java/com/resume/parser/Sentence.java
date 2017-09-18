@@ -54,5 +54,8 @@ public class Sentence {
 
     /** set of durations */
     private Set<String> duractionSet;
+    
+    /** skill set map */
+    private Map<String, Set<String>> skillSet;
 
 }
