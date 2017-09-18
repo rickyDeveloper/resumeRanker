@@ -27,7 +27,7 @@ public class ResumeReader {
 	        System.out.println("Organization List: "+sentence.getOrgSet());
 	        System.out.println("Duration List: "+sentence.getDuractionSet());
 //	        System.out.println(sentence.getSemanticGraph());
-//	        System.out.println(sentence.getInterestingWords());
+	        System.out.println(sentence.getInterestingWords());
         });
     }
     
