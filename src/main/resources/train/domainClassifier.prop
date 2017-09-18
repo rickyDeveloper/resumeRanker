@@ -29,4 +29,5 @@ tolerance=1e-4
 #
 # Training input
 #
-#trainFile=src/main/resources/train/custom.train
+loadClassifier=src/main/resources/train/domainClassModel.ser.gz
+serializeTo=src/main/resources/train/domainClassModel.ser.gz

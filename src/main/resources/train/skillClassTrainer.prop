@@ -5,7 +5,6 @@ useClassFeature=true
 useWord=true
 userNGrams=true
 
-
 #
 # Printing
 #
@@ -29,4 +28,5 @@ tolerance=1e-4
 #
 # Training input
 #
-#trainFile=src/main/resources/train/custom.train
+trainFile=src/main/resources/train/skillClassModel.train
+serializeTo=src/main/resources/train/skillClassModel.ser.gz
