@@ -7,6 +7,7 @@ import org.bson.types.ObjectId;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Map;
 
 /**
  * Created by vikasnaiyar on 18/09/17.
@@ -25,6 +26,15 @@ public class TagsDaoImpl implements TagsDao<String, DBObject> {
     public DBObject saveTag() {
         DBObject resume = new BasicDBObject("name", "Vikas Naiyar")
                 .append("email","vikasnaiyar@gmail.com");
+
+        collection.insert(resume);
+        //ObjectId id = (ObjectId)resume.get( "_id" );
+        return resume;
+    }
+    
+    @Override
+    public DBObject saveTag(Map json) {
+        DBObject resume = new BasicDBObject(json);
 
         collection.insert(resume);
         //ObjectId id = (ObjectId)resume.get( "_id" );

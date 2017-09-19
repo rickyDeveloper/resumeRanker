@@ -58,4 +58,7 @@ public class Sentence {
     /** skill set map */
     private Map<String, Set<String>> skillSet;
 
+    /** domain set map */
+    private Map<String, Set<String>> domainSet;
+
 }

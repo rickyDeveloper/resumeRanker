@@ -31,7 +31,7 @@ import javafx.util.Pair;
 /**
  * The Class ResumeSectionReader.
  */
-public class ResumeSectionReader implements Function<String, List<Pair<String, String>>> {
+public class ResumeSectionReader implements Function<InputStream, List<Pair<String, String>>> {
 
 	// Every resume will have a set of sections.  We want to identify the sections
     // and then apply different classifier for each of them.
@@ -65,9 +65,9 @@ public class ResumeSectionReader implements Function<String, List<Pair<String, S
 	 * @param  file
 	 * @return list of section and it's contents
 	 */
-	public List<Pair<String, String>> apply(String file) {
+	public List<Pair<String, String>> apply(InputStream stream) {
 		List<Pair<String, String>> resumeSections = Lists.newArrayList();
-		try (InputStream stream = ResumeReader.class.getResourceAsStream("/resume/John_Doe_cv.docx")) {
+		try {
             //parse method parameters
             Parser parser = new AutoDetectParser();
             BodyContentHandler handler = new BodyContentHandler();

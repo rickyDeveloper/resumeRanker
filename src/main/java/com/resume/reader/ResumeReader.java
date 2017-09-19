@@ -31,7 +31,7 @@ public class ResumeReader {
         		.personNames(Sets.newHashSet())
         		.skills(Maps.newHashMap())
         		.build();
-        new ResumeSectionReader().apply("/resume/John_Doe_cv.docx").forEach(section -> {
+        new ResumeSectionReader().apply(ResumeReader.class.getResourceAsStream("/resume/John_Doe_cv.docx")).forEach(section -> {
 	        Sentence sentence = new SentenceParser().apply(section.getValue());
 //	        System.out.println(sentence.getPosTaggedList());
 //	        System.out.println("Person List: "+sentence.getPersonSet());
