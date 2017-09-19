@@ -38,6 +38,7 @@ import java.util.Map;
 /**
  * Created by vikasnaiyar on 18/09/17.
  */
+@CrossOrigin
 @Controller
 @RequestMapping("/files")
 @Slf4j
@@ -72,8 +73,11 @@ public class FileController {
 
     @GetMapping("resume/{id}")
     @ResponseBody
-    public String getResume(@PathVariable String id){
-        return "Sending the resume";
+    public DBObject getResume(@PathVariable String id){
+
+        DBObject resumeTag = resumeDao.getTag(id);
+
+        return resumeTag;
     }
 
     @GetMapping("resume/{id}/rank")
@@ -87,10 +91,22 @@ public class FileController {
         return resumeRanker.rankResume(resumeTag,jdTags);
     }
 
+    @GetMapping("jd/{id}/rank")
+    @ResponseBody
+    public Map<DBObject, Map<Double,DBObject>> getJobRank(@PathVariable String id){
+
+        DBObject jdTag = jobDescriptionDao.getTag(id);
+
+        Collection<DBObject> resumeTags = resumeDao.getAllTags();
+
+        return resumeRanker.rankResume(jdTag,resumeTags);
+    }
+
     @GetMapping("jd/{id}")
     @ResponseBody
-    public String getJobDescription(@PathVariable String id){
-        return "Sending the JD";
+    public DBObject getJobDescription(@PathVariable String id){
+        DBObject jdTag = jobDescriptionDao.getTag(id);
+        return jdTag;
     }
 
 

@@ -3,6 +3,7 @@ package com.resume.ranker;
 import com.mongodb.*;
 import com.mongodb.util.JSON;
 import com.rest.util.WordToNumberUtil;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 
 import java.net.UnknownHostException;
@@ -15,6 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 /**
  * Created by vikasnaiyar on 17/09/17.
  */
+@Slf4j
 public class ResumeRanker {
 
     private String domainName;
@@ -61,23 +63,37 @@ public class ResumeRanker {
         for (DBObject sourceObject:sourceObjects) {
             int sourceExpInMonths = getExpInMonths(sourceObject);
 
+            ObjectId id = (ObjectId)sourceObject.get( "_id" );
+
             double score = 0.0d;
 
             score += getExperienceScore(targetExpInMonths, sourceExpInMonths);
 
             Collection<String> sourceDomainSkills =  getTagEntries(sourceObject, "domains", this.domainName);
 
-            score += getScore(targetDomainSkills, sourceDomainSkills, 1.0d);
+            double domainPerc = getScore(targetDomainSkills, sourceDomainSkills, 1.0d);
+
+            log.info("domainPerc for object {} is {} ", id.toString(), domainPerc);
+
+            score +=domainPerc;
 
             Collection<String> sourceTechLanguages =  getTagEntries(sourceObject, "skills", this.languageTag);
 
-            score += getScore(targetTechLanguages, sourceTechLanguages, 3.0d);
+            double skillsPerc = getScore(targetTechLanguages, sourceTechLanguages, 3.0d);
+
+            log.info("skillsPerc for object {} is {} ", id.toString(), skillsPerc);
+
+            score += skillsPerc;
 
             Collection<String> sourceFrameworks =  getTagEntries(sourceObject, "skills", this.languageTag);
 
-            score += getScore(targetFrameworks, sourceFrameworks, 2.0d);
+            skillsPerc = getScore(targetFrameworks, sourceFrameworks, 2.0d);
 
-            System.out.println("Score --> " + score);
+            log.info("skillsPerc for object {} is {} ", id.toString(), skillsPerc);
+
+            score += skillsPerc;
+
+            log.info("Score wrt to docId {} is {}--> " , id, score);
 
             matchingScoreMap.put(score, sourceObject);
         }
@@ -89,7 +105,7 @@ public class ResumeRanker {
 
     private double getScore(Collection<String> targetSkills, Collection<String> sourceSkills, double weight) {
 
-        final AtomicInteger matchCount = new AtomicInteger();  // I know this is bad but its 2:30 am in morning.
+        final AtomicInteger matchCount = new AtomicInteger(0);  // I know this is bad but its 2:30 am in morning.
 
         sourceSkills.forEach(domainSkill -> {
             if(targetSkills.contains(domainSkill)){
@@ -97,13 +113,18 @@ public class ResumeRanker {
             }
         });
 
+        double weightPerc = 0.0d;
+        if(sourceSkills.size() > 0) {
+            weightPerc = (matchCount.intValue()* weight / sourceSkills.size());
+        }
+
         // simple %
-        return (matchCount.intValue()* weight / sourceSkills.size());
+        return weight;
     }
 
     private double getExperienceScore(int targetExp, int sourceExp) {
         double score = 0.0d;
-        if(targetExp > sourceExp) {
+        if(targetExp >= sourceExp) {
              if(targetExp - sourceExp > 24) {
                  score = 4.0;
              } else {
@@ -116,6 +137,8 @@ public class ResumeRanker {
                 score = 1.0;
             }
         }
+
+        log.info("Score for exp is {} for targetExp {}  and sourceExp  {}--> " ,  score, targetExp, sourceExp);
 
         return score;
     }
@@ -134,6 +157,7 @@ public class ResumeRanker {
                 domainEntries.add(domainTerm.toString());
             }
         }
+
         return domainEntries;
     }
 
@@ -141,12 +165,18 @@ public class ResumeRanker {
         int expInMonths = 0;
 
         BasicDBList durations = (BasicDBList) object.get("durations");
+        ObjectId id = (ObjectId)object.get( "_id" );
 
-        for (Object duration : durations) {
-            expInMonths = WordToNumberUtil.getExpInMonths((String) duration) ;
-            if(expInMonths > 0) {
-                break;
+        if(durations != null) {
+            for (Object duration : durations) {
+                expInMonths = WordToNumberUtil.getExpInMonths((String) duration);
+                if (expInMonths > 0) {
+                    break;
+                }
             }
+            log.info("Experience for object {} is {} months", id.toString(), expInMonths);
+        } else {
+            log.error("Error fetching exp for object {}", id.toString());
         }
 
         return expInMonths;
