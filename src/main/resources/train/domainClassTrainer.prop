@@ -2,21 +2,20 @@
 # Features
 #
 useClassFeature=true
-1.useNGrams=true
-1.usePrefixSuffixNGrams=true
-1.maxNGramLeng=6
-1.minNGramLeng=1
-1.binnedLengths=10,20,30,40
+useWord=true
+userNGrams=true
+
 #
 # Printing
 #
 # printClassifier=HighWeight
 #printClassifierParam=200
+
 #
 # Mapping
 #
-goldAnswerColumn=1
-displayedColumn=0
+map= word=0,answer=1
+
 #
 # Optimization
 #
@@ -25,6 +24,7 @@ sigma=3
 useQN=true
 QNsize=15
 tolerance=1e-4
+
 #
 # Training input
 #

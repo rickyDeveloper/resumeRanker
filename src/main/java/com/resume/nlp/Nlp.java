@@ -33,6 +33,7 @@ public class Nlp {
     private static Properties p=new Properties();
     private static StanfordCoreNLP pipe;
     private static CRFClassifier nerClassifier;
+    private static CRFClassifier domainClassifier;
     private static CRFClassifier skillClassifier;
     
     /**
@@ -52,7 +53,17 @@ public class Nlp {
 			e.printStackTrace();
 		}
         skillClassifier = new CRFClassifier(properties);
-        skillClassifier.train("src/main/resources/train/skillClassModel.train"); 
+        skillClassifier.train("src/main/resources/train/skillClassModel.train");
+        
+        file = new File("src/main/resources/train/domainClassifier.prop");
+        properties = new Properties();
+        try (FileInputStream fileInput = new FileInputStream(file)){
+			properties.load(fileInput);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+        domainClassifier = new CRFClassifier(properties);
+        domainClassifier.train("src/main/resources/train/domainClassModel.train");
     }
     
     /**
@@ -95,5 +106,23 @@ public class Nlp {
         	}
         });
         return skillClassification;
+    }
+    
+    /**
+     * Gets the appropriate classification for given string
+     * @param text
+     * @return class of the given string
+     */
+    public static Map<String, Set<String>> getDomainClassification(String text) {
+        Map<String, Set<String>> domainClassification = Maps.newHashMap();
+        List<Triple<String, Integer, Integer>> results = domainClassifier.classifyToCharacterOffsets(text.toLowerCase());
+        results.forEach(triple -> {
+        	if(domainClassification.containsKey(triple.first)) {
+        		domainClassification.get(triple.first).add(text.substring(triple.second, triple.third));
+        	} else {
+        		domainClassification.put(triple.first, Sets.newHashSet(text.substring(triple.second, triple.third)));
+        	}
+        });
+        return domainClassification;
     }
 }

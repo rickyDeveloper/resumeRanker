@@ -91,6 +91,7 @@ public class SentenceParser implements Function<String, Sentence> {
         sentence.setNerAnnotatedText(Nlp.annotateNer(line));
         processNerResults(sentence);
         sentence.setSkillSet(getSkillSetMap(sentence));
+        sentence.setDomainSet(getDomainSetMap(sentence));
         return sentence;
     }
     
@@ -175,5 +176,24 @@ public class SentenceParser implements Function<String, Sentence> {
 			});
 		});
 		return skillSet;
+	}
+	
+	/**
+	 * gets the domain set with nlp classifier
+	 * @param sentence
+	 * @return domain set map
+	 */
+	private Map<String, Set<String>> getDomainSetMap(Sentence sentence) {
+		Map<String, Set<String>> domainSet = Maps.newHashMap();
+		sentence.getLemmas().forEach(lemma -> {
+			Nlp.getDomainClassification(lemma).entrySet().forEach(entry -> {
+				if(domainSet.containsKey(entry.getKey())){
+					domainSet.get(entry.getKey()).addAll(entry.getValue());
+				} else {
+					domainSet.put(entry.getKey(), entry.getValue());
+				}
+			});
+		});
+		return domainSet;
 	}
 }

@@ -31,7 +31,7 @@ public class ResumeReader {
         		.personNames(Sets.newHashSet())
         		.skills(Maps.newHashMap())
         		.build();
-        new ResumeSectionReader().apply(ResumeReader.class.getResourceAsStream("/resume/John_Doe_cv.docx")).forEach(section -> {
+        new ResumeSectionReader().apply(ResumeReader.class.getResourceAsStream("/resume/John_Doe_cv.odt")).forEach(section -> {
 	        Sentence sentence = new SentenceParser().apply(section.getValue());
 //	        System.out.println(sentence.getPosTaggedList());
 //	        System.out.println("Person List: "+sentence.getPersonSet());
@@ -48,11 +48,19 @@ public class ResumeReader {
 					resumeExcerpt.getSkills().put(entry.getKey(), entry.getValue());
 				}
 	        });
+	        sentence.getDomainSet().entrySet().forEach(entry -> {
+	        	if(resumeExcerpt.getDomains().containsKey(entry.getKey())){
+	        		resumeExcerpt.getDomains().get(entry.getKey()).addAll(entry.getValue());
+				} else {
+					resumeExcerpt.getDomains().put(entry.getKey(), entry.getValue());
+				}
+	        });
 //	        System.out.println(sentence.getSemanticGraph());
 //	        System.out.println(sentence.getInterestingWords());
 	        resumeExcerpt.getInterestedTerms().addAll(sentence.getInterestingWords());
         });
         resumeExcerpt.getSkills().remove("OTHER");
+        resumeExcerpt.getDomains().remove("OTHER");
         System.out.println(resumeExcerpt);
     }
     
