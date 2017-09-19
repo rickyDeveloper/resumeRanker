@@ -2,10 +2,15 @@ package com.rest.services;
 
 import com.dao.TagsDao;
 import com.dao.TagsDaoImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.rest.json.HelloWorld;
+import com.resume.nlp.Nlp;
 import com.resume.ranker.ResumeRanker;
+import com.resume.reader.ResumeSectionReader;
+import com.resume.reader.ResumeSectionToResumeExcerptMapper;
+
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
@@ -57,7 +62,12 @@ public class FileController {
         log.info("Received resume file " + file.getBytes());
 
         InputStream stream = file.getInputStream();
-        return resumeDao.saveTag().toString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.convertValue(
+        		new ResumeSectionToResumeExcerptMapper()
+        		.apply(new ResumeSectionReader().apply(stream)),
+        				Map.class);
+        return resumeDao.saveTag(map).toString();
     }
 
     @GetMapping("resume/{id}")
@@ -90,8 +100,12 @@ public class FileController {
         log.info("Received jd file " + file.getBytes());
 
         InputStream stream = file.getInputStream();
-
-        return jobDescriptionDao.saveTag().toString();
+        ObjectMapper objectMapper = new ObjectMapper();
+        Map<String, Object> map = objectMapper.convertValue(
+        		new ResumeSectionToResumeExcerptMapper()
+        		.apply(new ResumeSectionReader().apply(stream)),
+        				Map.class);
+        return jobDescriptionDao.saveTag(map).toString();
     }
 
 

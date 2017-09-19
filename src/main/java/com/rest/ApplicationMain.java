@@ -2,6 +2,7 @@ package com.rest;
 
 import com.dao.TagsDao;
 import com.dao.TagsDaoImpl;
+import com.resume.nlp.Nlp;
 import com.resume.ranker.ResumeRanker;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -19,6 +20,7 @@ import java.net.UnknownHostException;
 public class ApplicationMain implements CommandLineRunner{
 
     public static void main(String[] args) {
+    		Nlp.init();
             SpringApplication.run(ApplicationMain.class, args);
     }
 

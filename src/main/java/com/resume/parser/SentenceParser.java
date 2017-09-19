@@ -55,6 +55,8 @@ public class SentenceParser implements Function<String, Sentence> {
                 .personSet(Sets.newHashSet())
                 .orgSet(Sets.newHashSet())
                 .duractionSet(Sets.newHashSet())
+                .domainSet(Maps.newHashMap())
+                .skillSet(Maps.newHashMap())
                 .build();
         Nlp.annotate(line).forEach(coreMap -> {
             coreMap.get(CoreAnnotations.TokensAnnotation.class).forEach(token -> {
