@@ -44,7 +44,7 @@ public class ApplicationMain implements CommandLineRunner{
     @Bean
     @Qualifier("resumeRanker")
     public ResumeRanker getResumeRanker() throws UnknownHostException{
-        return new ResumeRanker("FINANCE", "LANG", "FRAMEWORKS");
+        return new ResumeRanker("FINANCE", "LANG_S", "FRAMEWORK_S");
     }
 
 

@@ -2,15 +2,13 @@ package com.resume.ranker;
 
 import com.mongodb.*;
 import com.mongodb.util.JSON;
+import com.rest.json.Rank;
 import com.rest.util.WordToNumberUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.bson.types.ObjectId;
 
 import java.net.UnknownHostException;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
@@ -31,7 +29,7 @@ public class ResumeRanker {
         this.languageTag = languageTag;
     }
 
-    public Map<DBObject, Map<Double,DBObject>> rankResume(DBObject targetObject, Collection<DBObject> sourceObjects) {
+    public List<Rank> rankResume(DBObject targetObject, Collection<DBObject> sourceObjects) {
         double rank = 0.0d;
 /*
         b) Exp    -->   40% weight
@@ -48,9 +46,11 @@ public class ResumeRanker {
         d) Domain  --> 10 %  weight
                     % matching * 1
 */
-        Map<Double, DBObject> matchingScoreMap = new HashMap<>();
-        Map<DBObject, Map<Double,DBObject>> scoreMap = new HashMap<>();
-        scoreMap.put(targetObject, matchingScoreMap);
+        //Map<Double, DBObject> matchingScoreMap = new HashMap<>();
+        //Map<DBObject, Map<Double,DBObject>> scoreMap = new HashMap<>();
+        List<Rank> ranks = new ArrayList<>();
+
+        //scoreMap.put(targetObject, matchingScoreMap);
 
         int targetExpInMonths = getExpInMonths(targetObject);
 
@@ -58,7 +58,7 @@ public class ResumeRanker {
 
         Collection<String> targetTechLanguages =  getTagEntries(targetObject, "skills", this.languageTag);
 
-        Collection<String> targetFrameworks =  getTagEntries(targetObject, "skills", this.languageTag);
+        Collection<String> targetFrameworks =  getTagEntries(targetObject, "skills", this.frameworkTag);
 
         for (DBObject sourceObject:sourceObjects) {
             int sourceExpInMonths = getExpInMonths(sourceObject);
@@ -85,7 +85,7 @@ public class ResumeRanker {
 
             score += skillsPerc;
 
-            Collection<String> sourceFrameworks =  getTagEntries(sourceObject, "skills", this.languageTag);
+            Collection<String> sourceFrameworks =  getTagEntries(sourceObject, "skills", this.frameworkTag);
 
             skillsPerc = getScore(targetFrameworks, sourceFrameworks, 2.0d);
 
@@ -95,11 +95,15 @@ public class ResumeRanker {
 
             log.info("Score wrt to docId {} is {}--> " , id, score);
 
-            matchingScoreMap.put(score, sourceObject);
+            ((BasicDBObject) sourceObject).remove("interestedTerms");
+
+           // matchingScoreMap.put(score, sourceObject);
+            ranks.add(new Rank(score,sourceObject));
         }
 
+        Collections.sort(ranks);
 
-        return  scoreMap;
+        return  ranks;
     }
 
 
@@ -107,19 +111,25 @@ public class ResumeRanker {
 
         final AtomicInteger matchCount = new AtomicInteger(0);  // I know this is bad but its 2:30 am in morning.
 
-        sourceSkills.forEach(domainSkill -> {
-            if(targetSkills.contains(domainSkill)){
-                matchCount.incrementAndGet();
-            }
+        sourceSkills.forEach(sourceSkill -> {
+            targetSkills.forEach(targetSkill -> {
+                     if (sourceSkill.toLowerCase().contains(targetSkill.toLowerCase()) || targetSkill.toLowerCase().contains(sourceSkill.toLowerCase())) {
+                         matchCount.getAndIncrement();
+                     }
+            });
         });
 
         double weightPerc = 0.0d;
-        if(sourceSkills.size() > 0) {
-            weightPerc = (matchCount.intValue()* weight / sourceSkills.size());
+        if(sourceSkills.size() > 0 && targetSkills.size() >0) {
+            if(sourceSkills.size() > targetSkills.size()) {
+                weightPerc = (matchCount.intValue()* weight / sourceSkills.size());
+            } else {
+                weightPerc = (matchCount.intValue()* weight / targetSkills.size());
+            }
         }
 
         // simple %
-        return weight;
+        return weightPerc;
     }
 
     private double getExperienceScore(int targetExp, int sourceExp) {

@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.mongodb.DBObject;
 import com.mongodb.util.JSON;
 import com.rest.json.HelloWorld;
+import com.rest.json.Rank;
 import com.resume.nlp.Nlp;
 import com.resume.ranker.ResumeRanker;
 import com.resume.reader.ResumeSectionReader;
@@ -33,6 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.UnknownHostException;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -82,7 +84,7 @@ public class FileController {
 
     @GetMapping("resume/{id}/rank")
     @ResponseBody
-    public Map<DBObject, Map<Double,DBObject>> getResumeRank(@PathVariable String id){
+    public List<Rank> getResumeRank(@PathVariable String id){
 
         DBObject resumeTag = resumeDao.getTag(id);
 
@@ -91,9 +93,21 @@ public class FileController {
         return resumeRanker.rankResume(resumeTag,jdTags);
     }
 
+
+
+    public static void main(String[] args) throws UnknownHostException {
+        FileController controller = new FileController();
+        controller.resumeDao = new TagsDaoImpl("test","resume");
+        controller.jobDescriptionDao = new TagsDaoImpl("test","jd");
+        controller.resumeRanker = new ResumeRanker("FINANCE", "LANG_S", "FRAMEWORK_S");
+
+        controller.getResumeRank("59c1aae677c81a5403399ee1");
+    }
+
+
     @GetMapping("jd/{id}/rank")
     @ResponseBody
-    public Map<DBObject, Map<Double,DBObject>> getJobRank(@PathVariable String id){
+    public List<Rank> getJobRank(@PathVariable String id){
 
         DBObject jdTag = jobDescriptionDao.getTag(id);
 

@@ -36,7 +36,7 @@ public class WordToNumberUtil {
 
         String[] expTokens = experience.split(" ");
 
-        if(expTokens != null && expTokens.length > 0) {
+        if(expTokens != null && expTokens.length > 1) {
             String token1 = expTokens[0];
 
             int firstTokenValue = parseInteger(token1);
